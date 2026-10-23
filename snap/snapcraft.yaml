@@ -1,0 +1,20 @@
+name: phost
+base: core24
+version: "0.3.0"
+summary: Local inbox for development email
+description: |
+  Phost catches the mail your development projects send and shows it
+  in a desktop app. Each mailbox listens on its own SMTP port, so
+  projects stay in separate inboxes.
+grade: stable
+confinement: classic
+license: MIT
+
+apps:
+  phost:
+    command: phost
+
+parts:
+  phost:
+    plugin: dump
+    source: snap/payload
