@@ -1,6 +1,6 @@
 name: phost
 base: core24
-version: "0.3.0"
+version: "0.3.1"
 summary: Local inbox for development email
 description: |
   Phost catches the mail your development projects send and shows it
