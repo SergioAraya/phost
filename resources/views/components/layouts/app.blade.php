@@ -22,7 +22,9 @@
 </head>
 
 <body class="transform-gpu scroll-smooth antialiased">
-    <x-support.title-spacer />
+    @if (PHP_OS_FAMILY === 'Darwin')
+        <x-support.title-spacer />
+    @endif
 
     {{ $slot }}
 

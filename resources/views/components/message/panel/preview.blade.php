@@ -9,7 +9,14 @@
         x-title="html-preview"
         x-data="{
             resize: () => $nextTick(
-                () => setTimeout(() => $el.style.height = $el.contentDocument.body?.scrollHeight + 1 + 'px')
+                () => setTimeout(() => {
+                    const scrollHeight = $el.contentDocument?.body?.scrollHeight ?? null
+
+                    if (scrollHeight != null) {
+                        const available = Math.max(window.innerHeight - $el.getBoundingClientRect().top - 24, 160)
+                        $el.style.height = Math.max(scrollHeight + 1, available) + 'px'
+                    }
+                })
             ),
         
             handleAnchorClicks: () => $el.contentDocument.addEventListener('click', function(event) {

@@ -2,6 +2,10 @@
 
 @props(['message', 'selected' => false])
 
+@php
+    $attachmentCount = $message->parsed->getAttachmentCount();
+@endphp
+
 <div
     {{ $attributes }}
     @class([
@@ -58,12 +62,24 @@
             </p>
         </div>
 
-        <div @class([
-            'text-base italic text-left transition-colors',
-            'text-neutral-400 dark:text-neutral-200' => !$selected,
-            'text-neutral-500 dark:text-neutral-300' => $selected,
-        ])>
-            {{ $message->parsed->getHeaderValue(Header::SUBJECT) }}
+        <div class="flex items-center justify-between">
+            <div @class([
+                'text-base italic text-left transition-colors',
+                'text-neutral-400 dark:text-neutral-200' => !$selected,
+                'text-neutral-500 dark:text-neutral-300' => $selected,
+            ])>
+                {{ $message->parsed->getHeaderValue(Header::SUBJECT) }}
+            </div>
+
+            @if ($attachmentCount > 0)
+                <span
+                    class="ml-2 inline-flex items-center text-sm text-neutral-400 dark:text-neutral-300"
+                    aria-label="{{ $attachmentCount }} adjuntos"
+                >
+                    <x-heroicon-o-paper-clip class="mr-1 h-3.5 w-3.5" />
+                    {{ $attachmentCount }}
+                </span>
+            @endif
         </div>
 
     </div>

@@ -13,14 +13,19 @@ class NativeAppServiceProvider implements ProvidesPhpIni
      */
     public function boot(): void
     {
-        Window::open()
+        $window = Window::open()
             ->title('phost')
-            ->titleBarHidden()
             ->hideMenu()
             ->width(1200)
             ->height(740)
             ->minWidth(700)
             ->minHeight(600);
+
+        // Hidden title bars keep the macOS traffic lights. On Linux they remove
+        // minimize and close, so the desktop title bar stays visible there.
+        if (PHP_OS_FAMILY === 'Darwin') {
+            $window->titleBarHidden();
+        }
     }
 
     /**

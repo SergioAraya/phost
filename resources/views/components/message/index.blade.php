@@ -145,6 +145,8 @@
         </nav>
     </div>
 
+    <x-message.attachments :$message />
+
     {{-- tab panels --}}
     <section
         x-cloak

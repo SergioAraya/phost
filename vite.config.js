@@ -7,5 +7,19 @@ export default defineConfig({
             input: ['resources/css/app.css', 'resources/js/app.js'],
             refresh: true,
         }),
+        {
+            name: 'externalize-electron',
+            enforce: 'pre',
+            resolveId(id) {
+                if (id === 'electron') {
+                    return { id, external: true };
+                }
+            },
+        },
     ],
+    build: {
+        rollupOptions: {
+            external: ['electron'],
+        },
+    },
 });

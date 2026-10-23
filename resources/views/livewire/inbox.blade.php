@@ -11,7 +11,11 @@
     class="flex h-screen w-full"
 >
 
-    <section class="relative flex h-full w-4/12 min-w-80 flex-col overflow-y-scroll bg-gray-50 pt-8 transition-colors dark:bg-neutral-900">
+    <section @class([
+        'relative flex h-full w-4/12 min-w-80 flex-col overflow-y-scroll bg-gray-50 transition-colors dark:bg-neutral-900',
+        'pt-6' => PHP_OS_FAMILY !== 'Darwin',
+        'pt-8' => PHP_OS_FAMILY === 'Darwin',
+    ])>
 
         @if ($this->inbox && !$search)
             <label class="px-3">

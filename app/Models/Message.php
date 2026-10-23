@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use ZBateson\MailMimeParser\Message as ParsedMessage;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use ZBateson\MailMimeParser\Header\ParameterHeader;
 use ZBateson\MailMimeParser\IMessage as ParsedMessageContract;
+use ZBateson\MailMimeParser\Message\IMessagePart;
 
 /**
  * @property ParsedMessageContract $parsed
@@ -76,6 +78,32 @@ class Message extends Model
         ]);
     }
 
+    /**
+     * @return list<array{index: int, filename: string, mime: string}>
+     */
+    public function attachments(): array
+    {
+        return collect($this->parsed->getAllAttachmentParts())
+            ->map(function (IMessagePart $part, int $index): array {
+                return [
+                    'index' => $index,
+                    'filename' => $this->attachmentFilename($part, $index),
+                    'mime' => $part->getContentType('application/octet-stream'),
+                ];
+            })
+            ->all();
+    }
+
+    public function attachmentFilename(IMessagePart $part, int $index): string
+    {
+        $name = $part->getFilename()
+            ?: $this->headerParameter($part, 'Content-Disposition', 'name')
+            ?: $this->headerParameter($part, 'Content-Type', 'name')
+            ?: 'attachment-'.($index + 1);
+
+        return str_replace(["\0", '/', '\\'], '-', $name);
+    }
+
     public function markRead(): void
     {
         if ($this->read_at) {
@@ -85,5 +113,18 @@ class Message extends Model
         $this->update([
             'read_at' => now(),
         ]);
+    }
+
+    private function headerParameter(IMessagePart $part, string $header, string $name): ?string
+    {
+        $value = $part->getHeader($header);
+
+        if (! $value instanceof ParameterHeader) {
+            return null;
+        }
+
+        $parameter = $value->getValueFor($name);
+
+        return $parameter !== null && $parameter !== '' ? $parameter : null;
     }
 }
