@@ -27,15 +27,6 @@
                 wire:submit="save"
                 novalidate
             >
-                <x-input.text
-                    :label="__('settings.port')"
-                    wire:model.lazy="port"
-                    inputmode="numeric"
-                    pattern="[0-9]"
-                    maxlength="4"
-                    x-mask="9999"
-                />
-
                 <x-input.fieldset
                     :legend="__('settings.language')"
                     class="space-x-4"
@@ -80,7 +71,10 @@
                     </x-input.radio>
                 </x-input.fieldset>
 
-                <x-input.fieldset :legend="__('settings.danger_zone')">
+                <x-input.fieldset
+                    :legend="__('settings.danger_zone')"
+                    class="items-center space-x-2"
+                >
                     <x-input.button
                         type="button"
                         level="danger"
@@ -91,6 +85,29 @@
                         <x-heroicon-c-trash class="mr-1 size-3" />
                         {{ __('settings.clear_inbox') }}
                     </x-input.button>
+
+                    @if ($this->canDeleteMailbox)
+                        <x-input.button
+                            type="button"
+                            level="danger"
+                            class="flex items-center"
+                            data-confirm1="{{ __('mailbox.confirm_delete_1', ['name' => $this->mailbox->name]) }}"
+                            data-confirm2="{{ __('mailbox.confirm_delete_2', ['name' => $this->mailbox->name, 'port' => $this->mailbox->port]) }}"
+                            data-confirm3="{{ __('mailbox.confirm_delete_3', ['name' => $this->mailbox->name]) }}"
+                            x-data="{
+                                ask() {
+                                    if (! confirm(this.$el.dataset.confirm1)) return
+                                    if (! confirm(this.$el.dataset.confirm2)) return
+                                    if (! confirm(this.$el.dataset.confirm3)) return
+                                    this.$wire.deleteMailbox()
+                                }
+                            }"
+                            x-on:click="ask()"
+                        >
+                            <x-heroicon-c-trash class="mr-1 size-3" />
+                            {{ __('mailbox.delete') }}
+                        </x-input.button>
+                    @endif
                 </x-input.fieldset>
 
                 <x-dialog.footer>
@@ -123,7 +140,8 @@
 
             <x-support.config
                 :framework="$this->selectedFramework"
-                :$port
+                :port="$this->mailbox->port"
+                :host="$this->mailbox->host()"
             />
         </div>
     </div>

@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Mailbox;
 use Throwable;
-use App\Settings\Config;
 use App\Services\Smtp\Server;
 use App\Events\MessageReceived;
 use Illuminate\Console\Command;
@@ -19,13 +19,20 @@ use Illuminate\Console\Command;
  */
 class HandleIncomingMessages extends Command
 {
-    protected $signature = 'smtp:serve';
+    protected $signature = 'smtp:serve {port}';
 
     protected $description = 'Starts SMTP server & handles incoming messages';
 
     public function handle()
     {
-        $port = $this->config()->port;
+        $port = (int) $this->argument('port');
+        $mailbox = Mailbox::query()->where('port', $port)->first();
+
+        if (! $mailbox) {
+            logger("SUPERVISOR | No mailbox for port :{$port}");
+
+            return Command::FAILURE;
+        }
 
         try {
 
@@ -33,7 +40,7 @@ class HandleIncomingMessages extends Command
 
             Server::new($port)
                 ->onMessageReceived(
-                    fn ($content) => MessageReceived::dispatch($content)
+                    fn ($content) => MessageReceived::dispatch($content, $mailbox->id)
                 )->serve();
 
         } catch (Throwable $th) {
@@ -48,10 +55,5 @@ class HandleIncomingMessages extends Command
         }
 
         return Command::SUCCESS;
-    }
-
-    private function config(): Config
-    {
-        return resolve(Config::class);
     }
 }

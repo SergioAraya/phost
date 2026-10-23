@@ -23,6 +23,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $this->applyLocale();
+
         View::composer('*', function (): void {
             $this->applyLocale();
         });

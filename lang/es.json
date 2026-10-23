@@ -29,5 +29,14 @@
     "settings.add_to_env": "Agrega esto a tu archivo .env:",
     "settings.add_to_config": "Agrega esto a tu archivo de configuración:",
     "settings.rails_hint": "En config/environments/*.rb indica los valores de ActionMailer para los servidores de desarrollo o de pruebas:",
-    "notification.received": "¡Tienes correo en Phost!"
+    "notification.received": "¡Tienes correo en Phost!",
+    "mailbox.label": "Buzón",
+    "mailbox.create": "Nuevo buzón",
+    "mailbox.name": "Nombre",
+    "mailbox.new": "Nuevo buzón",
+    "mailbox.general": "General",
+    "mailbox.delete": "Eliminar buzón",
+    "mailbox.confirm_delete_1": "¿Eliminar el buzón :name?",
+    "mailbox.confirm_delete_2": "Sus correos se borrarán y el puerto :port dejará de recibir. ¿Continuar?",
+    "mailbox.confirm_delete_3": "Última confirmación: esta acción no se puede deshacer. ¿Eliminar :name?"
 }

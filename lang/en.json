@@ -29,5 +29,14 @@
     "settings.add_to_env": "Add to your .env file:",
     "settings.add_to_config": "Add to your config file:",
     "settings.rails_hint": "In config/environments/*.rb specify ActionMailer defaults for your development or staging servers:",
-    "notification.received": "You've got Phost!"
+    "notification.received": "You've got Phost!",
+    "mailbox.label": "Mailbox",
+    "mailbox.create": "New mailbox",
+    "mailbox.name": "Name",
+    "mailbox.new": "New mailbox",
+    "mailbox.general": "General",
+    "mailbox.delete": "Delete mailbox",
+    "mailbox.confirm_delete_1": "Delete the :name mailbox?",
+    "mailbox.confirm_delete_2": "Its messages will be deleted and port :port will stop receiving mail. Continue?",
+    "mailbox.confirm_delete_3": "Final confirmation: this cannot be undone. Delete :name?"
 }

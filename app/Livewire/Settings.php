@@ -2,10 +2,11 @@
 
 namespace App\Livewire;
 
+use Throwable;
+use App\Models\Mailbox;
 use App\Models\Message;
 use Livewire\Component;
 use App\Enums\Framework;
-use App\Services\Smtp\Server;
 use App\Livewire\Concerns\Config;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Validate;
@@ -20,8 +21,7 @@ class Settings extends Component
 
     public ?string $framework = 'Laravel';
 
-    #[Validate('required|numeric|min_digits:4|starts_with:25')]
-    public int $port;
+    public ?int $mailboxId = null;
 
     #[Validate('required|in:light,dark')]
     public string $theme;
@@ -29,9 +29,11 @@ class Settings extends Component
     #[Validate('required|in:en,es')]
     public string $locale;
 
-    public function mount()
+    public function mount(?int $mailboxId = null)
     {
-        $this->fill($this->config->toArray());
+        $this->mailboxId = Mailbox::resolveId($mailboxId ?? $this->mailboxId);
+        $this->theme = $this->config->theme;
+        $this->locale = $this->config->locale;
     }
 
     //---------------------------------------------------------------
@@ -39,7 +41,6 @@ class Settings extends Component
     //---------------------------------------------------------------
     public function save()
     {
-        $oldPort = $this->config->port;
         $oldLocale = $this->config->locale;
 
         $validated = $this->validate();
@@ -53,19 +54,45 @@ class Settings extends Component
             app()->setLocale($this->locale);
             $this->js('window.location.reload()');
         }
-
-        // Stop the server & restart picked up by the scheduler
-        if ($this->port !== $oldPort) {
-            ChildProcess::stop('smtp-server');
-            Server::new($oldPort)->kill();
-        }
     }
 
     public function clearInbox()
     {
-        Message::query()->truncate();
+        Message::query()->where('mailbox_id', $this->mailboxId)->delete();
 
         return $this->redirectRoute('inbox', navigate: true);
+    }
+
+    public function deleteMailbox(): mixed
+    {
+        if (! $this->canDeleteMailbox) {
+            return null;
+        }
+
+        $mailbox = $this->mailbox;
+        $fallback = Mailbox::query()
+            ->whereKeyNot($mailbox->id)
+            ->orderByRaw("slug = 'general' desc")
+            ->orderBy('name')
+            ->first();
+
+        $this->stopListener($mailbox);
+        $mailbox->delete();
+
+        return $this->redirect(route('inbox', ['mailboxId' => $fallback->id]), navigate: true);
+    }
+
+    protected function stopListener(Mailbox $mailbox): void
+    {
+        if (app()->runningUnitTests()) {
+            return;
+        }
+
+        try {
+            ChildProcess::stop($mailbox->processAlias());
+        } catch (Throwable) {
+            // The listener may already be stopped.
+        }
     }
 
     //---------------------------------------------------------------
@@ -79,6 +106,18 @@ class Settings extends Component
     //---------------------------------------------------------------
     // Computed properties
     //---------------------------------------------------------------
+    #[Computed()]
+    public function mailbox(): Mailbox
+    {
+        return Mailbox::query()->findOrFail($this->mailboxId);
+    }
+
+    #[Computed]
+    public function canDeleteMailbox(): bool
+    {
+        return Mailbox::query()->count() > 1;
+    }
+
     #[Computed()]
     public function selectedFramework(): ?Framework
     {

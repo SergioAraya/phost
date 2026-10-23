@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use ZBateson\MailMimeParser\Message as ParsedMessage;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use ZBateson\MailMimeParser\Header\ParameterHeader;
@@ -22,6 +23,7 @@ class Message extends Model
         'bookmarked',
         'content',
         'read_at',
+        'mailbox_id',
     ];
 
     protected $casts = [
@@ -29,11 +31,17 @@ class Message extends Model
         'bookmarked' => 'boolean',
     ];
 
-    public static function fromContent(string $content): self
+    public static function fromContent(string $content, int $mailboxId): self
     {
         return self::create([
             'content' => $content,
+            'mailbox_id' => $mailboxId,
         ]);
+    }
+
+    public function mailbox(): BelongsTo
+    {
+        return $this->belongsTo(Mailbox::class);
     }
 
     //---------------------------------------------------------------

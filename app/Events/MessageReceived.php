@@ -17,9 +17,9 @@ class MessageReceived implements ShouldBroadcastNow
 
     const NOTIFICATION_TITLE = "You've got Phost!";
 
-    public function __construct(string $content)
+    public function __construct(public string $content, public int $mailboxId)
     {
-        $message = Message::fromContent($content);
+        $message = Message::fromContent($content, $mailboxId);
 
         Notification::title(__('notification.received'))
             ->message($message->parsed->getHeaderValue(HeaderConsts::SUBJECT))

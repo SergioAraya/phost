@@ -132,3 +132,14 @@ it('can remove bookmark from message', function () {
 
     expect($message)->fresh()->bookmarked->toBeFalse();
 });
+
+it('keeps the search field visible while searching', function () {
+    Message::factory()->content([
+        'title' => 'Factura de octubre',
+    ])->create();
+
+    $this->livewire(Inbox::class)
+        ->set('search', 'no-existe')
+        ->assertSeeHtml('placeholder="Buscar..."')
+        ->assertSee('No se encontró nada');
+});

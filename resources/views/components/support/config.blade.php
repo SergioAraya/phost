@@ -3,6 +3,7 @@
 @props([
     'framework' => null,
     'port' => 2525,
+    'host' => '127.0.0.1',
 ])
 
 <div class="space-y-2 text-sm dark:text-neutral-300">
@@ -13,7 +14,7 @@
 
             <x-support.code>
                 MAIL_MAILER=smtp
-                MAIL_HOST=127.0.0.1
+                MAIL_HOST={{ $host }}
                 MAIL_PORT={{ $port }}
                 MAIL_PASSWORD=null
                 MAIL_ENCRYPTION=null
@@ -25,7 +26,7 @@
             <span>{{ __('settings.add_to_env') }}</span>
 
             <x-support.code>
-                MAILER_URL=smtp://127.0.0.1:{{ $port }}?encryption=null&auth_mode=login&password=
+                MAILER_URL=smtp://{{ $host }}:{{ $port }}?encryption=null&auth_mode=login&password=
             </x-support.code>
         @break
 
@@ -34,7 +35,7 @@
             <x-support.code>
                 function phost($phpmailer) {
                 &nbsp;&nbsp;&nbsp;&nbsp;$phpmailer->isSMTP();
-                &nbsp;&nbsp;&nbsp;&nbsp;$phpmailer->Host = '127.0.0.1';
+                &nbsp;&nbsp;&nbsp;&nbsp;$phpmailer->Host = '{{ $host }}';
                 &nbsp;&nbsp;&nbsp;&nbsp;$phpmailer->SMTPAuth = true;
                 &nbsp;&nbsp;&nbsp;&nbsp;$phpmailer->Port = {{ $port }};
                 &nbsp;&nbsp;&nbsp;&nbsp;$phpmailer->Password = '';
@@ -55,7 +56,7 @@
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'class' => 'yii\swiftmailer\Mailer',
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'transport' => [
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'class' => 'Swift_SmtpTransport',
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'host' => '127.0.0.1',
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'host' => '{{ $host }}',
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'password' => '',
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'port' => '{{ $port }}',
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'encryption' => 'tls',
@@ -75,8 +76,8 @@
                 config.action_mailer.smtp_settings = {
                 &nbsp;&nbsp;&nbsp;&nbsp;:user_name => 'Mailbox-Name',
                 &nbsp;&nbsp;&nbsp;&nbsp;:password => '',
-                &nbsp;&nbsp;&nbsp;&nbsp;:address => '127.0.0.1',
-                &nbsp;&nbsp;&nbsp;&nbsp;:domain => '127.0.0.1',
+                &nbsp;&nbsp;&nbsp;&nbsp;:address => '{{ $host }}',
+                &nbsp;&nbsp;&nbsp;&nbsp;:domain => '{{ $host }}',
                 &nbsp;&nbsp;&nbsp;&nbsp;:port => '{{ $port }}',
                 &nbsp;&nbsp;&nbsp;&nbsp;:authentication => :plain
                 }

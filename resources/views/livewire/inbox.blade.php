@@ -1,9 +1,7 @@
 <main
     {{-- When the initial server status is offline, we ping a heartbeat, which checks the status & restarts the server process if needed --}}
-    @unless ($online)
         wire:init="heartbeat"
         wire:poll.3s="heartbeat"
-    @endunless
     {{-- Make sure we stay on the same page when refreshing (workaround for snappier UI) --}}
     x-on:keydown.meta.r.prevent="
         window.location.href = '/{{ $this->message?->id }}';
@@ -17,15 +15,37 @@
         'pt-8' => PHP_OS_FAMILY === 'Darwin',
     ])>
 
-        @if ($this->inbox && !$search)
-            <label class="px-3">
-                <input
-                    placeholder="{{ __('inbox.search') }}"
-                    wire:model.live="search"
-                    class="w-full rounded-lg border-none bg-gray-100 p-4 transition-all duration-200 focus:outline-none focus:ring-2 dark:bg-neutral-800 dark:text-neutral-300 dark:placeholder:text-neutral-400"
-                >
-            </label>
-        @endif
+        <div class="mb-3 flex items-center space-x-2 px-3">
+            <label class="sr-only" for="mailbox">{{ __('mailbox.label') }}</label>
+            <select
+                id="mailbox"
+                wire:model.live="mailboxId"
+                class="w-full rounded-lg border-none bg-gray-100 p-2 text-sm text-neutral-700 dark:bg-neutral-800 dark:text-neutral-200"
+            >
+                @foreach ($this->mailboxes as $mailbox)
+                    <option value="{{ $mailbox->id }}">
+                        {{ $mailbox->slug === 'general' ? __('mailbox.general') : $mailbox->name }}
+                    </option>
+                @endforeach
+            </select>
+
+            <button
+                type="button"
+                x-on:click="$dispatch('open-mailbox-dialog')"
+                class="rounded-lg bg-gray-100 px-3 py-2 text-sm font-medium text-neutral-700 dark:bg-neutral-800 dark:text-neutral-200"
+                aria-label="{{ __('mailbox.create') }}"
+            >
+                +
+            </button>
+        </div>
+
+        <label class="px-3">
+            <input
+                placeholder="{{ __('inbox.search') }}"
+                wire:model.live="search"
+                class="w-full rounded-lg border-none bg-gray-100 p-4 transition-all duration-200 focus:outline-none focus:ring-2 dark:bg-neutral-800 dark:text-neutral-300 dark:placeholder:text-neutral-400"
+            >
+        </label>
 
         <ul class="mt-6 flex-grow">
 
@@ -99,7 +119,40 @@
         <x-dialog.panel>
             <h2 class="mb-3 font-semibold text-neutral-700 dark:text-neutral-200">{{ __('inbox.configuration') }}</h2>
 
-            <livewire:settings />
+            <livewire:settings :mailbox-id="$mailboxId" wire:key="settings-{{ $mailboxId }}" />
+        </x-dialog.panel>
+    </x-dialog>
+
+    <x-dialog
+        x-on:open-mailbox-dialog.window="open()"
+        x-on:close-mailbox-dialog.window="close()"
+    >
+        <x-dialog.panel>
+            <h2 class="mb-3 font-semibold text-neutral-700 dark:text-neutral-200">{{ __('mailbox.new') }}</h2>
+
+            <form
+                wire:submit="createMailbox"
+                class="space-y-4"
+            >
+                <x-input.text
+                    :label="__('mailbox.name')"
+                    wire:model="newMailboxName"
+                />
+
+                <x-dialog.footer>
+                    <x-input.button
+                        type="button"
+                        level="secondary"
+                        x-on:click="close()"
+                    >
+                        {{ __('settings.cancel') }}
+                    </x-input.button>
+
+                    <x-input.button type="submit">
+                        {{ __('mailbox.create') }}
+                    </x-input.button>
+                </x-dialog.footer>
+            </form>
         </x-dialog.panel>
     </x-dialog>
 

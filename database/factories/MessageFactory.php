@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Mailbox;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -13,6 +14,7 @@ class MessageFactory extends Factory
             'content' => $this->rawMessage([
                 'title' => 'Hello World!',
             ]),
+            'mailbox_id' => Mailbox::query()->where('slug', 'general')->value('id'),
             'bookmarked' => false,
             'read_at' => null,
         ];
