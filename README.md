@@ -33,12 +33,23 @@ While Phost may not yet match the feature set (or stability) of some paid altern
 -   Bookmark emails for quick access
 -   Light & dark color schemes
 -   Print emails as PDF
+-   Spanish and English interface, with Spanish as the default
+-   Separate mailboxes per project, each with its own SMTP port and connection settings
 
 ## Getting started
 
-At present, only a macOS build is available. Windows and Linux builds are pending due to lack of testing environments. Contributions from users with access to these platforms are more than welcome.
+macOS builds are on the [releases page](https://github.com/gwleuverink/phost/releases).
 
-[Download the latest release here](https://github.com/gwleuverink/phost/releases).
+### Ubuntu
+
+The `.deb` needs these packages. On Ubuntu 24.04 and newer, GTK and AT-SPI use the `t64` names. Ubuntu 22.04 still ships `libgtk-3-0` and `libatspi2.0-0`.
+
+```bash
+sudo apt install libgtk-3-0t64 libnotify4 libnss3 libxss1 libxtst6 xdg-utils libatspi2.0-0t64 libuuid1 libsecret-1-0
+sudo dpkg -i phost_*_amd64.deb
+```
+
+`libxss1` is the one a desktop install often lacks. `libappindicator3-1` is optional and only adds the status icon. If `dpkg` stops because a package is missing, finish with `sudo apt install -f`.
 
 ## Supporting the Project
 
