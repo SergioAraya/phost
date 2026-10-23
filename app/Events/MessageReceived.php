@@ -21,7 +21,7 @@ class MessageReceived implements ShouldBroadcastNow
     {
         $message = Message::fromContent($content);
 
-        Notification::title(self::NOTIFICATION_TITLE)
+        Notification::title(__('notification.received'))
             ->message($message->parsed->getHeaderValue(HeaderConsts::SUBJECT))
             ->show();
     }

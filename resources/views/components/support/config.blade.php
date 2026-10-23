@@ -9,7 +9,7 @@
     @switch($framework)
         {{-- LARAVEL CONFIG --}}
         @case (Framework::Laravel)
-            <span>Add to your .env file:</span>
+            <span>{{ __('settings.add_to_env') }}</span>
 
             <x-support.code>
                 MAIL_MAILER=smtp
@@ -22,7 +22,7 @@
 
         {{-- SYMFONY CONFIG --}}
         @case(Framework::Symfony)
-            <span>Add to your .env file:</span>
+            <span>{{ __('settings.add_to_env') }}</span>
 
             <x-support.code>
                 MAILER_URL=smtp://127.0.0.1:{{ $port }}?encryption=null&auth_mode=login&password=
@@ -46,7 +46,7 @@
 
         {{-- YII CONFIG --}}
         @case(Framework::Yii)
-            <span>Add to your config file:</span>
+            <span>{{ __('settings.add_to_config') }}</span>
 
             <x-support.code>
                 'components' => [
@@ -68,7 +68,7 @@
 
         {{-- RAILS CONFIG --}}
         @case(Framework::Rails)
-            <span>In config/environments/*.rb specify ActionMailer defaults for your development or staging servers:</span>
+            <span>{{ __('settings.rails_hint') }}</span>
 
             <x-support.code>
                 config.action_mailer.delivery_method = :smtp

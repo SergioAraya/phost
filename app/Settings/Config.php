@@ -8,6 +8,7 @@ class Config extends Settings
 {
     public int $port;
     public string $theme;
+    public string $locale;
 
     public static function group(): string
     {

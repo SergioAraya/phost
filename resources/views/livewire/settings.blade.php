@@ -1,98 +1,130 @@
 @use(\App\Enums\Framework)
 
-<div class="space-y-2">
-
-    <div class="flex flex-row space-x-4 px-2">
-        @foreach (Framework::cases() as $framework)
-            <x-input.radio
-                wire:model.live="framework"
-                :wire:key="$framework->value"
-                :value="$framework->value"
-                :label="$framework->value"
-            />
-        @endforeach
-    </div>
-
-    <x-support.divider />
-
-    <x-support.config
-        :framework="$this->selectedFramework"
-        :$port
-    />
-
-    <form
-        wire:submit="save"
-        class="pt-6"
-        novalidate
+<div
+    x-tabs
+    x-model="selectedTabIndex"
+    x-data="{ selectedTabIndex: 0 }"
+>
+    <nav
+        x-tabs:list
+        class="mb-4 flex space-x-2"
     >
-        <x-input.text
-            label="Port"
-            wire:model.lazy="port"
-            inputmode="numeric"
-            pattern="[0-9]"
-            maxlength="4"
-            x-mask="9999"
-        />
+        <x-message.tab-button>
+            {{ __('settings.tab_configuration') }}
+        </x-message.tab-button>
 
-        {{-- Color scheme --}}
-        <x-input.fieldset
-            legend="Color scheme"
-            class="space-x-4"
-        >
+        <x-message.tab-button>
+            {{ __('settings.connection') }}
+        </x-message.tab-button>
+    </nav>
 
-            <x-input.radio
-                wire:model.live="theme"
-                value="light"
+    <div
+        x-cloak
+        x-tabs:panels
+    >
+        <div x-tabs:panel>
+            <form
+                wire:submit="save"
+                novalidate
             >
-                <x-slot:label
-                    class="flex"
+                <x-input.text
+                    :label="__('settings.port')"
+                    wire:model.lazy="port"
+                    inputmode="numeric"
+                    pattern="[0-9]"
+                    maxlength="4"
+                    x-mask="9999"
+                />
+
+                <x-input.fieldset
+                    :legend="__('settings.language')"
+                    class="space-x-4"
                 >
-                    <x-heroicon-c-sun class="size-4 text-neutral-600 dark:text-neutral-300" />
-                </x-slot:label>
-            </x-input.radio>
+                    <x-input.radio
+                        wire:model.live="locale"
+                        value="es"
+                        :label="__('settings.spanish')"
+                    />
 
-            <x-input.radio
-                wire:model.live="theme"
-                value="dark"
-            >
-                <x-slot:label
-                    class="flex"
+                    <x-input.radio
+                        wire:model.live="locale"
+                        value="en"
+                        :label="__('settings.english')"
+                    />
+                </x-input.fieldset>
+
+                <x-input.fieldset
+                    :legend="__('settings.color_scheme')"
+                    class="space-x-4"
                 >
-                    <x-heroicon-c-moon class="size-4 text-neutral-600 dark:text-neutral-300" />
-                </x-slot:label>
-            </x-input.radio>
+                    <x-input.radio
+                        wire:model.live="theme"
+                        value="light"
+                    >
+                        <x-slot:label
+                            class="flex"
+                        >
+                            <x-heroicon-c-sun class="size-4 text-neutral-600 dark:text-neutral-300" />
+                        </x-slot:label>
+                    </x-input.radio>
 
-        </x-input.fieldset>
+                    <x-input.radio
+                        wire:model.live="theme"
+                        value="dark"
+                    >
+                        <x-slot:label
+                            class="flex"
+                        >
+                            <x-heroicon-c-moon class="size-4 text-neutral-600 dark:text-neutral-300" />
+                        </x-slot:label>
+                    </x-input.radio>
+                </x-input.fieldset>
 
-        {{-- Danger zone --}}
-        <x-input.fieldset legend="Danger zone">
+                <x-input.fieldset :legend="__('settings.danger_zone')">
+                    <x-input.button
+                        type="button"
+                        level="danger"
+                        wire:click="clearInbox"
+                        wire:confirm="{{ __('settings.confirm_clear') }}"
+                        class="flex items-center"
+                    >
+                        <x-heroicon-c-trash class="mr-1 size-3" />
+                        {{ __('settings.clear_inbox') }}
+                    </x-input.button>
+                </x-input.fieldset>
 
-            <x-input.button
-                type="button"
-                level="danger"
-                wire:click="clearInbox"
-                wire:confirm="Are you sure you want to delete all messages?"
-                class="flex items-center"
-            >
-                <x-heroicon-c-trash class="mr-1 size-3" />
-                Clear inbox
-            </x-input.button>
+                <x-dialog.footer>
+                    <x-input.button
+                        type="button"
+                        level="secondary"
+                        x-on:click="close()"
+                    >
+                        {{ __('settings.cancel') }}
+                    </x-input.button>
 
-        </x-input.fieldset>
+                    <x-input.button type="submit">
+                        {{ __('settings.save') }}
+                    </x-input.button>
+                </x-dialog.footer>
+            </form>
+        </div>
 
-        <x-dialog.footer>
-            <x-input.button
-                type="button"
-                level="secondary"
-                x-on:click="close()"
-            >
-                Cancel
-            </x-input.button>
+        <div x-tabs:panel>
+            <div class="mb-3 flex flex-row space-x-4">
+                @foreach (Framework::cases() as $framework)
+                    <x-input.radio
+                        wire:model.live="framework"
+                        :wire:key="$framework->value"
+                        :value="$framework->value"
+                        :label="$framework->value"
+                    />
+                @endforeach
+            </div>
 
-            <x-input.button type="submit">
-                Save
-            </x-input.button>
-        </x-dialog.footer>
-    </form>
-
+            <x-support.config
+                :framework="$this->selectedFramework"
+                :$port
+            />
+        </div>
+    </div>
 </div>

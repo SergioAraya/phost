@@ -12,11 +12,11 @@ it('returns a successful response')
 
 it('displays inbox-zero message when inbox is empty')
     ->livewire(Inbox::class)
-    ->assertSee('Inbox zero 🎉');
+    ->assertSee('Bandeja vacía 🎉');
 
 it('displays settings button when inbox is empty')
     ->livewire(Inbox::class)
-    ->assertSee('settings')
+    ->assertSee('ajustes')
     ->assertSeeHtml("x-on:click=\"\$dispatch('open-settings-dialog')\"");
 
 it('can displays message in the sidebar', function () {

@@ -75,3 +75,16 @@ it('can delete all messages')
     ->defer(function () {
         expect(Message::count())->toBeEmpty();
     });
+
+it('defaults to spanish', function () {
+    expect(resolve(Config::class)->locale)->toBe('es');
+});
+
+it('can switch to english', function () {
+    $this->livewire(Settings::class)
+        ->set('locale', 'en')
+        ->call('save')
+        ->assertHasNoErrors();
+
+    expect(resolve(Config::class)->locale)->toBe('en');
+});

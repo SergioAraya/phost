@@ -20,7 +20,7 @@
         @if ($this->inbox && !$search)
             <label class="px-3">
                 <input
-                    placeholder="Search..."
+                    placeholder="{{ __('inbox.search') }}"
                     wire:model.live="search"
                     class="w-full rounded-lg border-none bg-gray-100 p-4 transition-all duration-200 focus:outline-none focus:ring-2 dark:bg-neutral-800 dark:text-neutral-300 dark:placeholder:text-neutral-400"
                 >
@@ -48,9 +48,9 @@
 
                 <li class="block w-full select-none px-4 py-5 text-center text-neutral-500">
                     @if ($search)
-                        Nothing found 🙈
+                        {{ __('inbox.nothing_found') }} 🙈
                     @else
-                        Inbox zero 🎉
+                        {{ __('inbox.zero') }} 🎉
                     @endif
                 </li>
             @endforelse
@@ -84,7 +84,7 @@
                     class="flex items-center"
                 >
                     <x-heroicon-c-cog-6-tooth class="mr-1 size-3 text-neutral-400 dark:text-neutral-600" />
-                    settings
+                    {{ __('inbox.settings') }}
                 </x-input.button>
             </section>
         @endif
@@ -97,7 +97,7 @@
         x-on:close-settings-dialog.window="close()"
     >
         <x-dialog.panel>
-            <h2 class="mb-3 font-semibold text-neutral-700 dark:text-neutral-200">Configuration</h2>
+            <h2 class="mb-3 font-semibold text-neutral-700 dark:text-neutral-200">{{ __('inbox.configuration') }}</h2>
 
             <livewire:settings />
         </x-dialog.panel>

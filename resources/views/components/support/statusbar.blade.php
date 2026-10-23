@@ -20,7 +20,7 @@
             ])></span>
         </span>
 
-        <span class="text-xs text-neutral-700 dark:text-neutral-300">{{ $online ? 'online' : 'offline' }}</span>
+        <span class="text-xs text-neutral-700 dark:text-neutral-300">{{ $online ? __('status.online') : __('status.offline') }}</span>
     </div>
 
 </div>

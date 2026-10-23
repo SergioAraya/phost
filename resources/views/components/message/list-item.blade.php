@@ -54,8 +54,8 @@
                 'text-neutral-400 dark:text-neutral-200' => !$selected,
                 'text-neutral-500 dark:text-neutral-300' => $selected,
             ])>
-                @if ($message->created_at > now()->subMinute())
-                    Just now
+                    @if ($message->created_at > now()->subMinute())
+                        {{ __('inbox.just_now') }}
                 @else
                     {{ $message->created_at->diffForHumans() }}
                 @endif
@@ -74,7 +74,7 @@
             @if ($attachmentCount > 0)
                 <span
                     class="ml-2 inline-flex items-center text-sm text-neutral-400 dark:text-neutral-300"
-                    aria-label="{{ $attachmentCount }} adjuntos"
+                    aria-label="{{ __('inbox.attachments', ['count' => $attachmentCount]) }}"
                 >
                     <x-heroicon-o-paper-clip class="mr-1 h-3.5 w-3.5" />
                     {{ $attachmentCount }}

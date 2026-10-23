@@ -26,6 +26,9 @@ class Settings extends Component
     #[Validate('required|in:light,dark')]
     public string $theme;
 
+    #[Validate('required|in:en,es')]
+    public string $locale;
+
     public function mount()
     {
         $this->fill($this->config->toArray());
@@ -37,6 +40,7 @@ class Settings extends Component
     public function save()
     {
         $oldPort = $this->config->port;
+        $oldLocale = $this->config->locale;
 
         $validated = $this->validate();
 
@@ -44,6 +48,11 @@ class Settings extends Component
 
         $this->activateTheme();
         $this->dispatch('close-settings-dialog');
+
+        if ($this->locale !== $oldLocale) {
+            app()->setLocale($this->locale);
+            $this->js('window.location.reload()');
+        }
 
         // Stop the server & restart picked up by the scheduler
         if ($this->port !== $oldPort) {

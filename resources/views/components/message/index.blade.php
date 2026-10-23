@@ -124,23 +124,23 @@
             class="absolute bottom-0 flex space-x-2"
         >
             <x-message.tab-button>
-                Preview
+                {{ __('message.preview') }}
             </x-message.tab-button>
 
             <x-message.tab-button>
-                Source
+                {{ __('message.source') }}
             </x-message.tab-button>
 
             <x-message.tab-button>
-                Text
+                {{ __('message.text') }}
             </x-message.tab-button>
 
             <x-message.tab-button>
-                Raw
+                {{ __('message.raw') }}
             </x-message.tab-button>
 
             <x-message.tab-button>
-                Headers
+                {{ __('message.headers') }}
             </x-message.tab-button>
         </nav>
     </div>
