@@ -21,6 +21,7 @@ if ! command -v lxc >/dev/null 2>&1; then
     exit 1
 fi
 
+mkdir -p "$root/dist"
 cd "$root"
-snapcraft pack --use-lxd
-echo "Snap written in $root"
+snapcraft pack --use-lxd --output "$root/dist"
+echo "Snap written in $root/dist"

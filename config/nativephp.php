@@ -63,6 +63,8 @@ return [
         'content',
         'storage/app/framework/{sessions,testing,cache}',
         'storage/logs/laravel.log',
+        'snap/payload',
+        '*.snap',
     ],
 
     /**
